@@ -9,7 +9,7 @@ public class Dialogue : MonoBehaviour
     string creditText;
     public GameObject plant, tub, sink, optionA, optionB, blackScreen, DisplayDuck,
         Teabags, Melatonin, soap, duckCollection, OneToothbrush, TwoToothbrush, 
-        deadPlant, flowerPlant, washSink, washHands, singleDuck;
+        deadPlant, flowerPlant, washSink, washHands, singleDuck, title;
     GameObject hairDye;
     bool GetTeabag, GetMelatonin, duckCollected, wateredPlant, chooseA, chooseB, rejectDuck;
     // Start is called before the first frame update
@@ -18,13 +18,21 @@ public class Dialogue : MonoBehaviour
         chooseBlue = 0;
         chooseSelf = 0;
         creditText = "Writing by Daniel Dykiel\nArt by Freddie O’Brion\nConcept art by Kanti Gudar and Freddie O’Brion\nMusic by Jimi DePriest\nProgramming by Jordan Deagan\nStory concept by Daniel Dykiel, Freddie O’Brion, Kanti Gudar, Jimi DePriest, Hunter Mundy, and Jordan Deagan";
-        setText("You should probably clean up the sink\n\n");
+        StartCoroutine(Begining());
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    IEnumerator Begining()
+    {
+        setText("Click to start\n\n");
+        yield return StartCoroutine(WaitForClick());
+        title.SetActive(false);
+        setText("You should probably clean the sink\n\n");
     }
 
     void setText(string message)
@@ -258,11 +266,13 @@ public class Dialogue : MonoBehaviour
 
     IEnumerator Father()
     {
-        setText("Your father had kept a rubber duck in his office bookcase. You didn’t remember exactly how that connected to programming, but somehow it did. ");
+        setText("Your father had kept a rubber duck in his office bookcase.\n");
+        yield return StartCoroutine(WaitForClick());
+        setText("You didn’t remember exactly how that connected to programming, but somehow it did.");
         yield return StartCoroutine(WaitForClick());
         setText("You didn’t like to think about it too much: after all, your relationship with your father could be described as strained.");
         yield return StartCoroutine(WaitForClick());
-        prepChoice("Were you comfortable with Blue joking about him?\n>Yes\n>No");
+        prepChoice("Were you ok with Blue joking about him?\n>Yes\n>No");
         yield return StartCoroutine(WaitForButton());
     }
 
@@ -413,7 +423,7 @@ public class Dialogue : MonoBehaviour
         }
         setText("");
         yield return StartCoroutine(FadeFromBlack());
-        setText("Two Months Later\n\n");
+        setText("Two Months Later\n\n(click to continue)");
         yield return StartCoroutine(WaitForClick());
         prepChoice("Exit Game\n>Yes\n>No");
         yield return StartCoroutine(WaitForButton());
@@ -464,5 +474,7 @@ public class Dialogue : MonoBehaviour
         flowerPlant.SetActive(false);
         deadPlant.SetActive(false);
         blackScreen.SetActive(false);
+        yield return new WaitForSecondsRealtime(15);
+        Application.Quit();  
     }
 }
