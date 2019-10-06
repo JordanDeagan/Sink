@@ -1,19 +1,24 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Dialogue : MonoBehaviour
 {
     int chooseSelf, chooseBlue;
-    public Text talk;
-    public GameObject plant, tub, counter, sink, optionA, optionB;
-    bool Teabag, Melatonin, duckCollected, wateredPlant, chooseA, chooseB;
+    public Text talk, credits;
+    string creditText;
+    public GameObject plant, tub, sink, optionA, optionB, blackScreen, DisplayDuck,
+        Teabags, Melatonin, soap, duckCollection, OneToothbrush, TwoToothbrush, 
+        deadPlant, flowerPlant, washSink, washHands, singleDuck;
+    GameObject hairDye;
+    bool GetTeabag, GetMelatonin, duckCollected, wateredPlant, chooseA, chooseB, rejectDuck;
     // Start is called before the first frame update
     void Start()
     {
         chooseBlue = 0;
         chooseSelf = 0;
+        creditText = "Writing by Daniel Dykiel\nArt by Freddie O’Brion\nConcept art by Kanti Gudar and Freddie O’Brion\nMusic by Jimi DePriest\nProgramming by Jordan Deagan\nStory concept by Daniel Dykiel, Freddie O’Brion, Kanti Gudar, Jimi DePriest, Hunter Mundy, and Jordan Deagan";
+        setText("You should probably clean up the sink\n\n");
     }
 
     // Update is called once per frame
@@ -72,11 +77,21 @@ public class Dialogue : MonoBehaviour
         }
     }
        
+
+
+
+    public IEnumerator SinkDialogue()
+    {
+        sink.SetActive(false);
+        washSink.SetActive(true);
+        yield return StartCoroutine(startSink());
+    }
+
     IEnumerator startSink()
     {
         setText("It’s late.\nOr maybe very early—you aren’t sure.\nEither way, your eyelids have begun to weigh.");
         yield return StartCoroutine(WaitForClick());
-        prepChoice("Will you have trouble falling asleep tonight?\nYes\nNo");
+        prepChoice("Will you have trouble falling asleep tonight?\n>Yes\n>No");
         yield return StartCoroutine(WaitForButton());
         if (chooseA)
         {
@@ -87,7 +102,7 @@ public class Dialogue : MonoBehaviour
 
     IEnumerator StaysUp()
     {
-        prepChoice("Why won’t you be able to sleep?\nBlue keeps you up at night\nYou’ve always had insomnia");
+        prepChoice("Why won’t you be able to sleep?\n>Blue keeps you up at night\n>You’ve always had insomnia");
         yield return StartCoroutine(WaitForButton());
         if (chooseA)
         {
@@ -103,17 +118,17 @@ public class Dialogue : MonoBehaviour
         yield return StartCoroutine(WaitForClick());
         setText("But the sound of the kettle wakes you up.\n\n");
         yield return StartCoroutine(WaitForClick());
-        prepChoice("Will you confront them about this?\nYes\nNo");
+        prepChoice("Will you confront them about this?\n>Yes\n>No");
         yield return StartCoroutine(WaitForButton());
         if (chooseA)
         {
-            Teabag = true;
-            Melatonin = false;
+            GetTeabag = true;
+            GetMelatonin = false;
         }
         else if (chooseB)
         {
-            Melatonin = false;
-            Teabag = false;
+            GetMelatonin = true;
+            GetTeabag = false;
         }
     }
 
@@ -121,7 +136,7 @@ public class Dialogue : MonoBehaviour
     {
         setText("The liquid is drying on the sink.\nIf you wait until tomorrow to clean it, it will\ncongeal.");
         yield return StartCoroutine(WaitForClick());
-        prepChoice("What do you clean first?\nThe sink\nYour hands");
+        prepChoice("What do you clean first?\n>The sink\n>Your hands");
         yield return StartCoroutine(WaitForButton());
         if (chooseA)
         {
@@ -137,6 +152,9 @@ public class Dialogue : MonoBehaviour
     IEnumerator cleanSink()
     {
         chooseBlue++;
+        washSink.SetActive(false);
+        washHands.SetActive(true);
+        hairDye = washHands;
         setText("You mop up the liquid with a cleaning wipe.\nAnd then another.\nAnd another.");
         yield return StartCoroutine(WaitForClick());
         setText("Maybe it’s because it’s the first time you’ve\ndyed your hair, but somehow,\nyou’ve managed to get it everywhere.");
@@ -154,6 +172,7 @@ public class Dialogue : MonoBehaviour
     IEnumerator cleanSelf()
     {
         chooseSelf++;
+        hairDye = washSink;
         setText("The water runs a saccharine pink as it passes\nthrough your fingers.\nYour hands are still stained from the dye.");
         yield return StartCoroutine(WaitForClick());
         setText("You know Blue is going to comment on it.\nMaybe it’s selfish, but you don’t want them to,\nno matter how casual they are.");
@@ -165,31 +184,285 @@ public class Dialogue : MonoBehaviour
     IEnumerator endSink()
     {
         tub.SetActive(true);
+        setText("You want to take a bath\n\n");
         yield return null;
     }
 
-    public IEnumerator SinkDialogue()
-    {
-        sink.SetActive(false);
-        yield return StartCoroutine(startSink());
-    }
+    
+
+
 
     public IEnumerator TubDialogue()
     {
         tub.SetActive(false);
-        talk.text = "this is a Tub\n\n";
-        plant.SetActive(true);
-        yield return new WaitForFixedUpdate();
+        yield return StartCoroutine(StartTub());
     }
+
+    public IEnumerator StartTub()
+    {
+        setText("The dye has sunk into your hands,\nand only your hands. But somehow\nyou feel it over the rest of your body.");
+        yield return StartCoroutine(WaitForClick());
+        setText("Hot and prickling, like a rash.\nYou run your fingers over your skin\nand expect to feel dry bumps.");
+        yield return StartCoroutine(WaitForClick());
+        setText("When you moved apartments,\nBlue gave you a rubber duck.\n");
+        yield return StartCoroutine(WaitForClick());
+        setText("They had been so pleased with the gift\nthat they couldn’t stop giggling to themselves.\n");
+        yield return StartCoroutine(WaitForClick());
+        DisplayDuck.SetActive(true);
+        setText("It was vibrant, almost ugly.\nYou hated keeping it in the bathroom.\n");
+        yield return StartCoroutine(WaitForClick());
+        setText("Sometimes it was as if you could feel\nits eyes on you, even if they were just\nflecks of paint.");
+        yield return StartCoroutine(WaitForClick());
+        setText("But later, you realized why Blue\nhad chosen such an odd-seeming gift.\n");
+        yield return StartCoroutine(WaitForClick());
+        prepChoice("It was because:\n>They were playing a joke on you\n>You used to collect rubber ducks as a child");
+        yield return StartCoroutine(WaitForButton());
+        if (chooseA)
+        {
+            yield return StartCoroutine(PlayJoke());
+        }
+        else if (chooseB)
+        {
+            yield return StartCoroutine(CollectDucks());
+        }
+        yield return StartCoroutine(Appreciate());
+    }
+
+    IEnumerator PlayJoke()
+    {
+        setText("Sometimes it feels like Blue speaks a different language. Their voice rises and falls, their words blur together.");
+        yield return StartCoroutine(WaitForClick());
+        setText("And their jokes are long, convoluted. You didn’t know if they’re overly-pointed, or if you read too deep into them.");
+        yield return StartCoroutine(WaitForClick());
+        prepChoice("The joke had been about: \n>This being your first apartment\n>Your father being a programmer");
+        yield return StartCoroutine(WaitForButton());
+        if (chooseA)
+        {
+            yield return StartCoroutine(FirstApart());
+        }
+        else if (chooseB)
+        {
+            yield return StartCoroutine(Father());
+        }
+    }
+
+    IEnumerator FirstApart()
+    {
+        setText("You agonized over color schemes, every object you bought. You wanted to build a space that was cozy and sophisticated.");
+        yield return StartCoroutine(WaitForClick());
+        setText("You didn’t realize how intense you were being until Blue pointed it out to you.\n");
+        yield return StartCoroutine(WaitForClick());
+        setText("And they had bought you a rubber duck—gaudy and cheap.\n");
+        yield return StartCoroutine(WaitForClick());
+    }
+
+    IEnumerator Father()
+    {
+        setText("Your father had kept a rubber duck in his office bookcase. You didn’t remember exactly how that connected to programming, but somehow it did. ");
+        yield return StartCoroutine(WaitForClick());
+        setText("You didn’t like to think about it too much: after all, your relationship with your father could be described as strained.");
+        yield return StartCoroutine(WaitForClick());
+        prepChoice("Were you comfortable with Blue joking about him?\n>Yes\n>No");
+        yield return StartCoroutine(WaitForButton());
+    }
+
+    IEnumerator CollectDucks()
+    {
+        setText("You didn’t even remember talking about it. But you must have, because Blue remembered.\n");
+        yield return StartCoroutine(WaitForClick());
+        prepChoice("This is significant because:\n>You want to collect rubber-ducks again\n>Blue's thoughtfulness surprises you.");
+        yield return StartCoroutine(WaitForButton());
+        if (chooseA)
+        {
+            duckCollected = true;
+        }
+    }
+
+    IEnumerator Appreciate()
+    {
+        prepChoice("Do you appreciate the gift?\n>Yes\n>No");
+        yield return StartCoroutine(WaitForButton());
+        if (chooseA)
+        {
+            chooseBlue++;
+            setText("You adjust the rubber duck so that it centers more on the ledge. Right now, you can’t help but feel a certain special fondness for it.");
+            yield return StartCoroutine(WaitForClick());
+        }
+        else if (chooseB)
+        {
+            chooseSelf++;
+            rejectDuck = true;
+            setText("It hadn’t felt right, to throw away a gift. But you want to.\n");
+            yield return StartCoroutine(WaitForClick());
+            setText("Your hand twitches. \n\n");
+            yield return StartCoroutine(WaitForClick());
+            setText("You reach out and for a moment, you think you’ll knock the duck into the tub.\n");
+            yield return StartCoroutine(WaitForClick());
+            setText("Instead, you turn it so it faces inward towards the wall.\n");
+            yield return StartCoroutine(WaitForClick());
+        }
+        yield return StartCoroutine(EndTub());
+    }
+
+    public IEnumerator EndTub()
+    {
+        plant.SetActive(true);
+        setText("You should probably check on the plant\n\n");
+        yield return null;
+    }
+
+
 
     public IEnumerator PlantDialogue()
     {
         plant.SetActive(false);
-        talk.text = "this is a Plant\n\n";
-        yield return new WaitForFixedUpdate();
+        yield return StartCoroutine(StartPlant());
     }
 
-    void endGame()
+    IEnumerator StartPlant()
     {
+        setText("You step out of the tub. You walk to the plant in its corner.\n");
+        yield return StartCoroutine(WaitForClick());
+        setText("At first, the plant had brightened up the small room, added a breath of life.\n");
+        yield return StartCoroutine(WaitForClick());
+        setText("But over time it became smothering, almost selfish in the way it grew.\n");
+        yield return StartCoroutine(WaitForClick());
+        prepChoice("Did you remember to water the plant today?\n>Yes\n>No");
+        yield return StartCoroutine(WaitForButton());
+        if (chooseA)
+        {
+            wateredPlant = true;
+            chooseBlue++;
+        }
+        else if (chooseB)
+        {
+            chooseSelf++;
+        }
+        yield return StartCoroutine(endGame());
+    }
+
+
+
+
+
+    IEnumerator endGame()
+    {
+        yield return StartCoroutine(FadeToBlack());
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        hairDye.SetActive(false);
+        DisplayDuck.SetActive(false);
+        if (chooseSelf >= 2)
+        {
+            OneToothbrush.SetActive(true);
+            if (GetMelatonin)
+            {
+                Melatonin.SetActive(true);
+            }
+            if (duckCollected)
+            {
+                duckCollection.SetActive(true);
+            }
+            else if (rejectDuck)
+            {
+                soap.SetActive(true);
+            }
+            else
+            {
+                singleDuck.SetActive(true);
+            }
+            if (wateredPlant)
+            {
+                flowerPlant.SetActive(true);
+            }
+            else
+            {
+                deadPlant.SetActive(true);
+            }
+        }
+        else if (chooseBlue >= 2)
+        {
+            TwoToothbrush.SetActive(true);
+            if (GetMelatonin)
+            {
+                Melatonin.SetActive(true);
+            }
+            else if (GetTeabag)
+            {
+                Teabags.SetActive(true);
+            }
+            if (duckCollected)
+            {
+                duckCollection.SetActive(true);
+            }
+            else if (rejectDuck)
+            {
+                soap.SetActive(true);
+            }
+            else
+            {
+                singleDuck.SetActive(true);
+            }
+            if (wateredPlant)
+            {
+                flowerPlant.SetActive(true);
+            }
+            else
+            {
+                deadPlant.SetActive(true);
+            }
+        }
+        setText("");
+        yield return StartCoroutine(FadeFromBlack());
+        setText("Two Months Later\n\n");
+        yield return StartCoroutine(WaitForClick());
+        prepChoice("Exit Game\n>Yes\n>No");
+        yield return StartCoroutine(WaitForButton());
+        if (chooseB)
+        {
+            setText("Click to exit\n\n");
+            yield return StartCoroutine(WaitForClick());
+        }
+        yield return StartCoroutine(runCredits());
+
+    }
+
+    IEnumerator FadeToBlack()
+    {
+        Color tmp = blackScreen.GetComponent<SpriteRenderer>().color;
+        while (tmp.a < 1)
+        {
+            tmp.a += .005f;
+            blackScreen.GetComponent<SpriteRenderer>().color = tmp;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    IEnumerator FadeFromBlack()
+    {
+        Color tmp = blackScreen.GetComponent<SpriteRenderer>().color;
+        while (tmp.a >0)
+        {
+            tmp.a -= .005f;
+            blackScreen.GetComponent<SpriteRenderer>().color = tmp;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    IEnumerator runCredits()
+    {
+        yield return StartCoroutine(FadeToBlack());
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        gameObject.GetComponent<SpriteRenderer>().color = Color.black;
+        credits.text = creditText;
+        TwoToothbrush.SetActive(false);
+        OneToothbrush.SetActive(false);
+        Melatonin.SetActive(false);
+        Teabags.SetActive(false);
+        duckCollection.SetActive(false);
+        soap.SetActive(false);
+        singleDuck.SetActive(false);
+        flowerPlant.SetActive(false);
+        deadPlant.SetActive(false);
+        blackScreen.SetActive(false);
     }
 }
