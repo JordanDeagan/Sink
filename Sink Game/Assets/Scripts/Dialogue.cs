@@ -17,14 +17,8 @@ public class Dialogue : MonoBehaviour
     {
         chooseBlue = 0;
         chooseSelf = 0;
-        creditText = "Writing by Daniel Dykiel\nArt by Freddie O’Brion\nConcept art by Kanti Gudar and Freddie O’Brion\nMusic by Jimi DePriest\nProgramming by Jordan Deagan\nStory concept by Daniel Dykiel, Freddie O’Brion, Kanti Gudar, Jimi DePriest, Hunter Mundy, and Jordan Deagan";
+        creditText = "Writing by Daniel Dykiel\nArt by Freddie O’Brion\nConcept art by Kanti Gudur and Freddie O’Brion\nMusic by Jimi DePriest\nProgramming by Jordan Deagan\nStory concept by Daniel Dykiel, Freddie O’Brion, Kanti Gudur, Jimi DePriest, Hunter Mundy, and Jordan Deagan";
         StartCoroutine(Begining());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     IEnumerator Begining()
@@ -33,6 +27,7 @@ public class Dialogue : MonoBehaviour
         yield return StartCoroutine(WaitForClick());
         title.SetActive(false);
         setText("You should probably clean the sink\n\n");
+        sink.SetActive(true);
     }
 
     void setText(string message)
@@ -325,7 +320,8 @@ public class Dialogue : MonoBehaviour
 
     public IEnumerator PlantDialogue()
     {
-        plant.SetActive(false);
+        plant.GetComponent<PlantObject>().enabled = false;
+        plant.GetComponent<SpriteRenderer>().enabled = true;
         yield return StartCoroutine(StartPlant());
     }
 
