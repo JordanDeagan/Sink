@@ -357,6 +357,7 @@ public class Dialogue : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         hairDye.SetActive(false);
         DisplayDuck.SetActive(false);
+        plant.SetActive(false);
         if (chooseSelf >= 2)
         {
             OneToothbrush.SetActive(true);
